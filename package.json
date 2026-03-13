@@ -1,0 +1,13 @@
+{
+  "name": "trading-view-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:be\" \"npm run dev:fe\"",
+    "dev:be": "cd backend && php artisan serve",
+    "dev:fe": "cd frontend && npm run dev",
+    "migrate": "cd backend && php artisan migrate"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
