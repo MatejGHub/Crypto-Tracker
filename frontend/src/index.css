@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,10 +6,16 @@
 @layer base {
   :root {
     --primary: lab(61.7444% -56.3779 49.029);
+    --font-inter: "Inter";
+  }
+
+  @theme inline {
     --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
     --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
   }
+
   body {
+    @apply antialiased;
     font-family: var(--font-sans);
   }
 }
