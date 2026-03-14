@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: lab(61.7444% -56.3779 49.029);
+    --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+    --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+  }
+  body {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: var(--primary);
+  }
+
+  .text-primary {
+    color: var(--primary);
+  }
+
+  .border-primary {
+    border-color: var(--primary);
+  }
+}

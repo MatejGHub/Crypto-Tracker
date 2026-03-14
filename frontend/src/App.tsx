@@ -11,7 +11,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   return (
     <>
-      <main className="main-container flex">
+      <main className="main-container flex h-screen overflow-hidden">
         <Aside activeTab={activeTab} setActiveTab={setActiveTab} />
         {activeTab === "dashboard" && <Dashboard />}
         {activeTab === "markets" && <Markets />}
