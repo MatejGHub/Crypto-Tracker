@@ -1,4 +1,5 @@
 import HeaderSettings from "../Header-settings";
+import Chart from "../Chart";
 import { useState, useEffect } from "react";
 import { Activity, BarChart3, DollarSign, TrendingDown, TrendingUp } from "lucide-react";
 
@@ -145,6 +146,11 @@ export function Dashboard() {
                 </div>
               </article>
             ))}
+          </div>
+          <div className="dashboard-content-chart mt-3">
+            <div className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6">
+              <Chart />
+            </div>
           </div>
         </div>
       </section>
