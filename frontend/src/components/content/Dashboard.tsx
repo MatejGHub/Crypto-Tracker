@@ -1,7 +1,9 @@
 import HeaderSettings from "../Header-settings";
 import Chart from "../Chart";
+import News from "../News";
 import { useState, useEffect } from "react";
 import { Activity, BarChart3, DollarSign, TrendingDown, TrendingUp } from "lucide-react";
+import MarketData from "../MarketData";
 
 export function Dashboard() {
   const [stats, setStats] = useState({
@@ -123,7 +125,7 @@ export function Dashboard() {
           </div>
           <HeaderSettings />
         </div>
-        <div className="dashboard-content bg-black p-3 flex-1 border-b border-[#1B232B]">
+        <div className="dashboard-content min-h-0 flex-1 overflow-y-auto border-b border-[#1B232B] bg-black p-3">
           <div className="dashboard-content info-cards grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {cards.map(({ title, value, change, trend, changeClass, Icon }) => (
               <article key={title} className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6">
@@ -147,10 +149,16 @@ export function Dashboard() {
               </article>
             ))}
           </div>
-          <div className="dashboard-content-chart mt-3">
-            <div className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6">
+          <div className="dashboard-content-chart mt-3 flex w-full items-start gap-3">
+            <div className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6 w-8/12 sticky top-0">
               <Chart />
             </div>
+            <div className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6 w-4/12 sticky top-0">
+              <News />
+            </div>
+          </div>
+          <div className="market-container bg-[#050D14] mt-3 p-3 border rounded-2xl border-[#1B232B]">
+            <MarketData />
           </div>
         </div>
       </section>
