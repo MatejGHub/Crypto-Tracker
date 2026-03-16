@@ -23,36 +23,47 @@ export function Dashboard() {
     const url = "https://api.coingecko.com/api/v3/global";
     try {
       const response = await fetch(url);
+      if (!response.ok) {
+        return false;
+      }
       const data = await response.json();
-      setPrevStats({
-        totalMarketCap: stats.totalMarketCap,
-        dailyVolume: stats.dailyVolume,
-        marketCapPercentage: stats.marketCapPercentage,
-        activeCryptos: stats.activeCryptos,
-      });
-      setStats({
+      if (!data?.data?.total_market_cap?.usd) {
+        return false;
+      }
+      const nextStats = {
         totalMarketCap: data.data.total_market_cap.usd,
         dailyVolume: data.data.total_volume.usd,
         marketCapPercentage: data.data.market_cap_percentage.btc,
         activeCryptos: data.data.active_cryptocurrencies,
+      };
+      setStats((currentStats) => {
+        setPrevStats(currentStats);
+        return nextStats;
       });
-      return data;
-    } catch (error) {
-      console.error(error);
+      return true;
+    } catch {
+      return false;
     }
   }
 
   useEffect(() => {
-    getGlobalState();
+    let isMounted = true;
+    let timeoutId: number | undefined;
 
-    const id = setInterval(
-      () => {
-        getGlobalState();
-      },
-      60 * 60 * 1000,
-    );
+    const pollGlobalState = async () => {
+      const ok = await getGlobalState();
+      if (!isMounted) return;
+      timeoutId = window.setTimeout(pollGlobalState, ok ? 60 * 60 * 1000 : 2 * 60 * 1000);
+    };
 
-    return () => clearInterval(id);
+    pollGlobalState();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   function showPercentage(current: number, previous: number) {
