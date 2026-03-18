@@ -1,10 +1,12 @@
 import { Sparkles, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import WishlistContext from "../context/WIshlistContext";
+import { useContext } from "react";
 
 export function MarketData() {
   const [marketData, setMarketData] = useState<any[]>([]);
-  const [isWishlisted, setIsWishlisted] = useState<Set<string>>(new Set());
+  const { isWishlisted, setIsWishlisted } = useContext(WishlistContext) ?? { isWishlisted: new Set(), setIsWishlisted: () => {} };
 
   function toggleWishlist(id: string) {
     setIsWishlisted((prev) => {
@@ -22,7 +24,7 @@ export function MarketData() {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
+
       return data;
     } catch (error) {
       console.error(error);
@@ -65,7 +67,7 @@ export function MarketData() {
               <td className="py-2">Volume</td>
               <td className="py-2">Supply</td>
               <td className="py-2">Last 7 days</td>
-              <td className="py-2">Wishlist</td>
+              <td className="py-2">Watchlist</td>
             </tr>
           </thead>
           <tbody>

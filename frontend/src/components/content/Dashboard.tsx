@@ -91,7 +91,7 @@ export function Dashboard() {
       value: Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-        minimumFractionDigits: 1,
+        minimumFractionDigits: 0,
         notation: "compact",
       }).format(stats.totalMarketCap),
       change: showPercentage(stats.totalMarketCap, prevStats.totalMarketCap),
