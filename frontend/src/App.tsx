@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { WishlistProvider } from "./context/WIshlistContext";
+import { MarketDataProvider } from "./context/MarketData";
 import Dashboard from "./components/content/Dashboard";
 import Aside from "./components/Aside";
 import Markets from "./components/content/Markets";
@@ -12,14 +13,16 @@ function App() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   return (
     <WishlistProvider>
-      <main className="main-container flex h-screen overflow-hidden">
-        <Aside activeTab={activeTab} setActiveTab={setActiveTab} />
-        {activeTab === "dashboard" && <Dashboard />}
-        {activeTab === "markets" && <Markets />}
-        {activeTab === "watchlist" && <Watchlist />}
-        {activeTab === "ai-insights" && <AiInsights />}
-        {activeTab === "settings" && <Settings />}
-      </main>
+      <MarketDataProvider>
+        <main className="main-container flex h-screen overflow-hidden">
+          <Aside activeTab={activeTab} setActiveTab={setActiveTab} />
+          {activeTab === "dashboard" && <Dashboard />}
+          {activeTab === "markets" && <Markets />}
+          {activeTab === "watchlist" && <Watchlist />}
+          {activeTab === "ai-insights" && <AiInsights />}
+          {activeTab === "settings" && <Settings />}
+        </main>
+      </MarketDataProvider>
     </WishlistProvider>
   );
 }

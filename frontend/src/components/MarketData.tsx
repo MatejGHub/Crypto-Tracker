@@ -1,12 +1,12 @@
 import { Sparkles, Star } from "lucide-react";
-import { useState, useEffect } from "react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import WishlistContext from "../context/WIshlistContext";
 import { useContext } from "react";
+import MarketDataContext from "../context/MarketData";
 
 export function MarketData() {
-  const [marketData, setMarketData] = useState<any[]>([]);
   const { isWishlisted, setIsWishlisted } = useContext(WishlistContext) ?? { isWishlisted: new Set(), setIsWishlisted: () => {} };
+  const { marketData } = useContext(MarketDataContext) ?? { marketData: [] };
 
   function toggleWishlist(id: string) {
     setIsWishlisted((prev) => {
@@ -17,32 +17,6 @@ export function MarketData() {
       return next;
     });
   }
-
-  async function getMarketData() {
-    const url =
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true&price_change_percentage=24h,7d";
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    const loadMarketData = async () => {
-      const data = await getMarketData();
-      setMarketData(data ?? []);
-    };
-
-    loadMarketData();
-
-    const id = setInterval(loadMarketData, 1000 * 60 * 60 * 24);
-
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <>
