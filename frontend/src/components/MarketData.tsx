@@ -1,5 +1,5 @@
 import { Sparkles, Star } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { LineChart, Line, XAxis, YAxis } from "recharts";
 import WishlistContext from "../context/WIshlistContext";
 import { useContext } from "react";
 import MarketDataContext from "../context/MarketData";
@@ -88,46 +88,46 @@ export function MarketData() {
                   </td>
                   <td className="border-t border-[#1B232B] py-2">
                     <div className="h-12 w-28">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                          margin={{ top: 2, right: 0, left: 0, bottom: 2 }}
-                          data={(singleMarketData.sparkline_in_7d?.price ?? []).map((price: number, index: number) => {
-                            return {
-                              index,
-                              price: Number(price),
-                            };
-                          })}
-                        >
-                          <Line
-                            type="linear"
-                            dataKey="price"
-                            stroke={singleMarketData.price_change_percentage_24h > 0 ? "#00B65C" : "#FF3B5C"}
-                            strokeWidth={2}
-                            dot={false}
-                            activeDot={false}
-                          />
-                          <XAxis
-                            type="number"
-                            dataKey="index"
-                            hide={true}
-                            axisLine={false}
-                            tickLine={false}
-                            domain={["dataMin", "dataMax"]}
-                          />
-                          <YAxis
-                            hide={true}
-                            axisLine={false}
-                            tickLine={false}
-                            domain={([dataMin, dataMax]) => {
-                              if (dataMin === dataMax) {
-                                return [dataMin - 1, dataMax + 1];
-                              }
-                              const padding = (dataMax - dataMin) * 0.05;
-                              return [dataMin - padding, dataMax + padding];
-                            }}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
+                      <LineChart
+                        width={112}
+                        height={48}
+                        margin={{ top: 2, right: 0, left: 0, bottom: 2 }}
+                        data={(singleMarketData.sparkline_in_7d?.price ?? []).map((price: number, index: number) => {
+                          return {
+                            index,
+                            price: Number(price),
+                          };
+                        })}
+                      >
+                        <Line
+                          type="linear"
+                          dataKey="price"
+                          stroke={singleMarketData.price_change_percentage_24h > 0 ? "#00B65C" : "#FF3B5C"}
+                          strokeWidth={2}
+                          dot={false}
+                          activeDot={false}
+                        />
+                        <XAxis
+                          type="number"
+                          dataKey="index"
+                          hide={true}
+                          axisLine={false}
+                          tickLine={false}
+                          domain={["dataMin", "dataMax"]}
+                        />
+                        <YAxis
+                          hide={true}
+                          axisLine={false}
+                          tickLine={false}
+                          domain={([dataMin, dataMax]) => {
+                            if (dataMin === dataMax) {
+                              return [dataMin - 1, dataMax + 1];
+                            }
+                            const padding = (dataMax - dataMin) * 0.05;
+                            return [dataMin - padding, dataMax + padding];
+                          }}
+                        />
+                      </LineChart>
                     </div>
                   </td>
                   <td className="border-t border-[#1B232B] py-2">

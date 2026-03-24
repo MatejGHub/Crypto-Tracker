@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WishlistProvider } from "./context/WIshlistContext";
 import { MarketDataProvider } from "./context/MarketData";
 import Dashboard from "./components/content/Dashboard";
@@ -10,7 +10,14 @@ import Settings from "./components/content/Settings";
 import "./App.css";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    return localStorage.getItem("activeTab") || "dashboard";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
   return (
     <WishlistProvider>
       <MarketDataProvider>

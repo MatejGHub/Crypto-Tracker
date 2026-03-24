@@ -3,7 +3,7 @@ import { useContext } from "react";
 import WishlistContext from "../../context/WIshlistContext";
 import MarketDataContext from "../../context/MarketData";
 import { Star } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { LineChart, Line, XAxis, YAxis } from "recharts";
 
 function EmptyWatchlistCard() {
   return (
@@ -75,38 +75,36 @@ export function Watchlist() {
                         </p>
                       </div>
                       <div className="h-12 w-40 min-w-[10rem] shrink-0">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={sparklineData}>
-                            <Line
-                              type="linear"
-                              dataKey="price"
-                              stroke={coin.price_change_percentage_24h > 0 ? "#00B65C" : "#FF3B5C"}
-                              strokeWidth={2.5}
-                              dot={false}
-                              activeDot={false}
-                            />
-                            <XAxis
-                              type="number"
-                              dataKey="index"
-                              hide={true}
-                              axisLine={false}
-                              tickLine={false}
-                              domain={["dataMin", "dataMax"]}
-                            />
-                            <YAxis
-                              hide={true}
-                              axisLine={false}
-                              tickLine={false}
-                              domain={([dataMin, dataMax]) => {
-                                if (dataMin === dataMax) {
-                                  return [dataMin - 1, dataMax + 1];
-                                }
-                                const padding = (dataMax - dataMin) * 0.05;
-                                return [dataMin - padding, dataMax + padding];
-                              }}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
+                        <LineChart width={160} height={48} data={sparklineData}>
+                          <Line
+                            type="linear"
+                            dataKey="price"
+                            stroke={coin.price_change_percentage_24h > 0 ? "#00B65C" : "#FF3B5C"}
+                            strokeWidth={2.5}
+                            dot={false}
+                            activeDot={false}
+                          />
+                          <XAxis
+                            type="number"
+                            dataKey="index"
+                            hide={true}
+                            axisLine={false}
+                            tickLine={false}
+                            domain={["dataMin", "dataMax"]}
+                          />
+                          <YAxis
+                            hide={true}
+                            axisLine={false}
+                            tickLine={false}
+                            domain={([dataMin, dataMax]) => {
+                              if (dataMin === dataMax) {
+                                return [dataMin - 1, dataMax + 1];
+                              }
+                              const padding = (dataMax - dataMin) * 0.05;
+                              return [dataMin - padding, dataMax + padding];
+                            }}
+                          />
+                        </LineChart>
                       </div>
                     </div>
                   </article>
