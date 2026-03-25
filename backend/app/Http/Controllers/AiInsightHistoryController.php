@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\DB;
 class AiInsightHistoryController extends Controller
 {
     function createAiInsightHistory(Request $request){
-        $aiInsights = DB::table('ai_insights')->orderbyDesc('id')->limit(10)->get();
-        return response()->json($aiInsights);
+        $aiInsights = DB::table('ai_insights')->orderbyDesc('id')->paginate(10);
+
+        return response()->json([
+            'aiInsights' => $aiInsights
+        ]);
     }
 }

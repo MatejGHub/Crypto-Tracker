@@ -45,7 +45,7 @@ class AiInsightsController extends Controller
             '"coin_symbol":string uppercase (the one coin the standout_summary focuses on),'.
             '"coin_name":string (full name of that coin),'.
             '"news_created_at":string (ISO 8601 UTC timestamp for when this insight is generated, e.g. 2025-03-19T12:00:00Z)}. '.
-            'Pick one standout from the list; be brief.';
+            'Pick one standout from the list; be brief. The market can be either bullish or bearish. SO include that.';
 
         $api_key = config('services.groq.api_key');
 

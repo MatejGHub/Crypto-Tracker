@@ -5,6 +5,10 @@ import HeaderSettings from "../Header-settings";
 export function AiInsights() {
   const [insight, setInsight] = useState<Record<string, unknown> | null>(null);
   const [insights, setInsights] = useState<Record<string, unknown>[]>([]);
+  const [historyPage, setHistoryPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -25,32 +29,29 @@ export function AiInsights() {
 
   useEffect(() => {
     const getAiInsightsHistory = async () => {
-      const response = await fetch("http://localhost:8000/api/ai-insights-history", {
+      const page = historyPage;
+      const response = await fetch(`http://localhost:8000/api/ai-insights-history?page=${page}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          id: insight?.id,
-          market_status: insight?.market_status,
-          market_change_percent: insight?.market_change_percent,
-          ai_confidence: insight?.ai_confidence,
-          active_signals: insight?.active_signals,
-          accuracy: insight?.accuracy,
-          title: insight?.title,
-          standout_summary: insight?.standout_summary,
-          coin_symbol: insight?.coin_symbol,
-          coin_name: insight?.coin_name,
-          news_created_at: insight?.news_created_at,
-        }),
+        body: JSON.stringify({}),
       });
 
       const data = await response.json();
-      setInsights(data);
+      const pagePayload = data?.aiInsights;
+      if (!pagePayload?.data) {
+        setInsights([]);
+        return;
+      }
+      setCurrentPage(pagePayload.current_page);
+      setLastPage(pagePayload.last_page);
+      setTotal(pagePayload.total);
+      setInsights(Array.isArray(pagePayload.data) ? pagePayload.data : []);
     };
 
     getAiInsightsHistory();
-  }, []);
+  }, [historyPage]);
   return (
     <>
       <section className="ai-insights-container w-full text-white h-screen flex flex-col">
@@ -131,14 +132,37 @@ export function AiInsights() {
               </div>
             )}
             <section className="latest-insights">
-              <h2 className="mb-3 text-lg font-bold text-white">Latest insights{insights.length > 0}</h2>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-bold text-white">Latest insights{total > 0 ? ` (${total} total)` : ""}</h2>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#8C98A5]">
+                  <button
+                    type="button"
+                    className="rounded-lg border border-[#1B232B] bg-[#050D14] px-3 py-1.5 font-medium text-white transition hover:bg-[#1B232B] disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={() => setHistoryPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage <= 1}
+                  >
+                    Previous
+                  </button>
+                  <span className="tabular-nums">
+                    {currentPage} / {lastPage}
+                  </span>
+                  <button
+                    type="button"
+                    className="rounded-lg border border-[#1B232B] bg-[#050D14] px-3 py-1.5 font-medium text-white transition hover:bg-[#1B232B] disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={() => setHistoryPage((p) => p + 1)}
+                    disabled={currentPage >= lastPage}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
 
-              {insights.map((insight) => {
+              {insights.map((row) => {
                 return (
-                  <article key={String(insight?.id)} className="rounded-2xl border border-[#1B232B] bg-[#050D14] p-5 mb-3">
+                  <article key={String(row?.id)} className="rounded-2xl border border-[#1B232B] bg-[#050D14] p-5 mb-3">
                     <div className="flex gap-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#071B14]">
-                        {insight?.market_status === "bullish" ? (
+                        {row?.market_status === "bullish" ? (
                           <TrendingUp className="h-6 w-6 text-[#00B65C]" />
                         ) : (
                           <TrendingDown className="h-6 w-6 text-[#00B65C]" />
@@ -146,20 +170,20 @@ export function AiInsights() {
                       </div>
                       <div className="flex min-w-0 flex-1 flex-col gap-3">
                         <div className="flex flex-wrap items-start justify-between gap-2">
-                          <h3 className="text-lg font-bold text-white">{String(insight?.title)}</h3>
+                          <h3 className="text-lg font-bold text-white">{String(row?.title)}</h3>
                           <span className="rounded-full bg-[#071B14] px-3 py-1 text-xs font-semibold text-[#00B65C]">
-                            {String(insight?.market_status)}
+                            {String(row?.market_status)}
                           </span>
                         </div>
-                        <p className="text-sm leading-relaxed text-[#8C98A5]">{String(insight?.standout_summary)}</p>
+                        <p className="text-sm leading-relaxed text-[#8C98A5]">{String(row?.standout_summary)}</p>
                         <div className="flex flex-wrap items-center gap-4 text-xs text-[#8C98A5]">
                           <span className="inline-flex items-center gap-1">
                             <Sparkles className="h-3.5 w-3.5 text-[#00B65C]" />
-                            {`${insight?.ai_confidence}%`}
+                            {`${row?.ai_confidence}%`}
                           </span>
                           <span>{timeAgo()}</span>
                           <span className="rounded-full border border-[#1B232B] px-2 py-0.5 font-semibold uppercase tracking-wide text-white">
-                            {String(insight?.coin_name)}
+                            {String(row?.coin_name)}
                           </span>
                         </div>
                       </div>
