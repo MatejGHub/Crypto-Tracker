@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class AiInsightsController extends Controller
 {
@@ -55,6 +57,39 @@ class AiInsightsController extends Controller
             'messages' => [
                 ['role' => 'user', 'content' => $content],
             ],
+        ]);
+
+        if (! $response->successful()) {
+            return response()->json(['error' => 'Groq failed'], 502);
+        }
+
+        $groqJson = $response->json();
+        $raw = $groqJson['choices'][0]['message']['content'] ?? null;
+        $decoded = is_string($raw) ? json_decode(trim($raw), true) : null;
+
+        if (! is_array($decoded)) {
+            return response()->json([
+                'error' => 'Invalid Groq JSON payload',
+                'raw' => $raw,
+            ], 502);
+        }
+
+        // Store the parsed AI JSON into the DB.
+        DB::table('ai_insights')->insert([
+            'market_status' => $decoded['market_status'] ?? null,
+            'market_change_percent' => $decoded['market_change_percent'] ?? null,
+            'ai_confidence' => $decoded['ai_confidence'] ?? null,
+            'active_signals' => isset($decoded['active_signals']) ? json_encode($decoded['active_signals']) : null,
+            'accuracy' => $decoded['accuracy'] ?? null,
+            'title' => $decoded['title'] ?? null,
+            'standout_summary' => $decoded['standout_summary'] ?? null,
+            'coin_symbol' => $decoded['coin_symbol'] ?? null,
+            'coin_name' => $decoded['coin_name'] ?? null,
+            'news_created_at' => isset($decoded['news_created_at'])
+                ? Carbon::parse($decoded['news_created_at'])
+                : now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return $response->json();

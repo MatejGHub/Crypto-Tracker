@@ -13,9 +13,6 @@ export function AiInsights() {
       const raw = data?.choices?.[0]?.message?.content;
       const parsed = typeof raw === "string" ? (JSON.parse(raw) as Record<string, unknown>) : null;
       setInsight((prev) => ({ ...prev, ...parsed }));
-      if (parsed) {
-        setInsights((prev) => [...prev, parsed]);
-      }
     })();
   }, []);
 
@@ -25,6 +22,35 @@ export function AiInsights() {
 
     return `${new Date(time).toLocaleString()}`;
   }
+
+  useEffect(() => {
+    const getAiInsightsHistory = async () => {
+      const response = await fetch("http://localhost:8000/api/ai-insights-history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: insight?.id,
+          market_status: insight?.market_status,
+          market_change_percent: insight?.market_change_percent,
+          ai_confidence: insight?.ai_confidence,
+          active_signals: insight?.active_signals,
+          accuracy: insight?.accuracy,
+          title: insight?.title,
+          standout_summary: insight?.standout_summary,
+          coin_symbol: insight?.coin_symbol,
+          coin_name: insight?.coin_name,
+          news_created_at: insight?.news_created_at,
+        }),
+      });
+
+      const data = await response.json();
+      setInsights(data);
+    };
+
+    getAiInsightsHistory();
+  }, []);
   return (
     <>
       <section className="ai-insights-container w-full text-white h-screen flex flex-col">
@@ -109,10 +135,7 @@ export function AiInsights() {
 
               {insights.map((insight) => {
                 return (
-                  <article
-                    key={String(insight?.news_created_at ?? "")}
-                    className="rounded-2xl border border-[#1B232B] bg-[#050D14] p-5 mb-3"
-                  >
+                  <article key={String(insight?.id)} className="rounded-2xl border border-[#1B232B] bg-[#050D14] p-5 mb-3">
                     <div className="flex gap-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#071B14]">
                         {insight?.market_status === "bullish" ? (
