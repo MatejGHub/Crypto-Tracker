@@ -3,10 +3,12 @@ import { LineChart, Line, XAxis, YAxis } from "recharts";
 import WishlistContext from "../context/WIshlistContext";
 import { useContext } from "react";
 import MarketDataContext from "../context/MarketData";
+import { useNavigate } from "react-router-dom";
 
 export function MarketData() {
   const { isWishlisted, setIsWishlisted } = useContext(WishlistContext) ?? { isWishlisted: new Set(), setIsWishlisted: () => {} };
   const { marketData } = useContext(MarketDataContext) ?? { marketData: [] };
+  const navigate = useNavigate();
 
   function toggleWishlist(id: string) {
     setIsWishlisted((prev) => {
@@ -16,6 +18,10 @@ export function MarketData() {
       localStorage.setItem("wishlisted", JSON.stringify(Array.from(next)));
       return next;
     });
+  }
+
+  function navigateToCrypto(id: string) {
+    navigate(`/crypto/${id}`);
   }
 
   return (
@@ -47,7 +53,7 @@ export function MarketData() {
           <tbody>
             {marketData.map((singleMarketData) => {
               return (
-                <tr key={singleMarketData.id}>
+                <tr onClick={() => navigateToCrypto(singleMarketData.id)}>
                   <td className="border-t border-[#1B232B] py-2 text-[#8C98A5]">{singleMarketData.market_cap_rank}</td>
                   <td className="border-t border-[#1B232B] py-2 flex flex-row gap-2 items-center">
                     <img src={singleMarketData.image} alt={singleMarketData.name} className="w-6 h-6" />

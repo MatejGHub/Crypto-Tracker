@@ -8,6 +8,7 @@ import Watchlist from "./components/content/Watchlist";
 import AiInsights from "./components/content/AiInsights";
 import Settings from "./components/content/Settings";
 import NotFound from "./pages/404";
+import SingleCrypto from "./pages/singleCrypto";
 import "./App.css";
 
 function pathToTab(pathname: string): string {
@@ -61,6 +62,7 @@ function App() {
         <Route path="watchlist" element={<Watchlist />} />
         <Route path="ai-insights" element={<AiInsights />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="crypto/:coinId" element={<SingleCrypto />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
