@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { WishlistProvider } from "./context/WIshlistContext";
 import { MarketDataProvider } from "./context/MarketData";
 import Dashboard from "./components/content/Dashboard";
@@ -7,30 +7,63 @@ import Markets from "./components/content/Markets";
 import Watchlist from "./components/content/Watchlist";
 import AiInsights from "./components/content/AiInsights";
 import Settings from "./components/content/Settings";
+import NotFound from "./pages/404";
 import "./App.css";
 
-function App() {
-  const [activeTab, setActiveTab] = useState<string>(() => {
-    return localStorage.getItem("activeTab") || "dashboard";
-  });
+function pathToTab(pathname: string): string {
+  if (pathname === "/" || pathname === "/dashboard") return "dashboard";
+  const seg = pathname.replace(/^\//, "").split("/")[0] ?? "";
+  if (["markets", "watchlist", "ai-insights", "settings"].includes(seg)) return seg;
+  return "dashboard";
+}
 
-  useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
+function tabToPath(tab: string): string {
+  switch (tab) {
+    case "dashboard":
+      return "/";
+    case "markets":
+      return "/markets";
+    case "watchlist":
+      return "/watchlist";
+    case "ai-insights":
+      return "/ai-insights";
+    case "settings":
+      return "/settings";
+    default:
+      return "/";
+  }
+}
+
+function Layout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = pathToTab(location.pathname);
 
   return (
     <WishlistProvider>
       <MarketDataProvider>
         <main className="main-container flex h-screen overflow-hidden">
-          <Aside activeTab={activeTab} setActiveTab={setActiveTab} />
-          {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "markets" && <Markets />}
-          {activeTab === "watchlist" && <Watchlist />}
-          {activeTab === "ai-insights" && <AiInsights />}
-          {activeTab === "settings" && <Settings />}
+          <Aside activeTab={activeTab} setActiveTab={(tab) => navigate(tabToPath(tab))} />
+          <Outlet />
         </main>
       </MarketDataProvider>
     </WishlistProvider>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="markets" element={<Markets />} />
+        <Route path="watchlist" element={<Watchlist />} />
+        <Route path="ai-insights" element={<AiInsights />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
