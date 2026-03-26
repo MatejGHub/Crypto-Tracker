@@ -15,6 +15,7 @@ function pathToTab(pathname: string): string {
   if (pathname === "/" || pathname === "/dashboard") return "dashboard";
   const seg = pathname.replace(/^\//, "").split("/")[0] ?? "";
   if (["markets", "watchlist", "ai-insights", "settings"].includes(seg)) return seg;
+  if (seg === "crypto") return "";
   return "dashboard";
 }
 

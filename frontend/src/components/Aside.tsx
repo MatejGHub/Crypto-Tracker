@@ -1,4 +1,6 @@
 import { LayoutDashboard, LineChart, Star, Settings, Sparkles } from "lucide-react";
+import Register from "./content/Register";
+import Search from "./content/Search";
 
 export function Aside({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) {
   const itemClass = (tab: string) => {
@@ -18,7 +20,7 @@ export function Aside({ activeTab, setActiveTab }: { activeTab: string; setActiv
         </div>
         <div className="aside-content flex-1 min-h-0 bg-[#05090D] p-3 text-white flex flex-col gap-3">
           <div className="search-container">
-            <input className="aside-content-item search" placeholder="Search assets..." type="text" />
+            <Search />
           </div>
           <div className={itemClass("dashboard")} onClick={() => setActiveTab("dashboard")}>
             <LayoutDashboard className="h-[21px] w-[21px]" />
@@ -41,7 +43,9 @@ export function Aside({ activeTab, setActiveTab }: { activeTab: string; setActiv
             <span>Settings</span>
           </div>
         </div>
-        <div className="aside-footer p-3 h-16 bg-[#05090D] text-white border-t border-[#1B232B]">Register</div>
+        <div className="aside-footer p-3 h-16 bg-[#05090D] text-white border-t border-[#1B232B]">
+          <Register />
+        </div>
       </aside>
     </>
   );
