@@ -137,7 +137,12 @@ export function MarketData() {
                     </div>
                   </td>
                   <td className="border-t border-[#1B232B] py-2">
-                    <button onClick={() => toggleWishlist(singleMarketData.id)}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(singleMarketData.id);
+                      }}
+                    >
                       <Star
                         className={`h-4 w-4 ${isWishlisted.has(singleMarketData.id) ? "fill-yellow-500 text-yellow-500" : ""}`}
                       />

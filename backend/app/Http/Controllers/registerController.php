@@ -7,6 +7,8 @@ use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use function Symfony\Component\Translation\t;
+
 class registerController extends Controller
 {
     function register(Request $request){
@@ -42,7 +44,11 @@ class registerController extends Controller
         }
 
         if(Hash::check($validateData['password'], $user->password)){
-            return response()->json(["message" => "Login successful"]);
+            return response()->json([
+                "message" => "Login successful",
+                "token" => $user->createToken('auth_token')->plainTextToken,
+                "user" => $user->name,
+            ], 200);
         }else{
             return response()->json(["message" => "Invalid password"], 401);
         }

@@ -56,21 +56,34 @@ export default function Register() {
       }),
     });
     const data = await response.json();
-    setIsLoggedIn(true);
+    if (!response.ok) {
+      setIsLoggedIn(false);
+      return;
+    }
+
     console.log(data);
+
+    sessionStorage.setItem(
+      "auth",
+      JSON.stringify({
+        token: data.token,
+        user: data.user,
+      }),
+    );
+    setIsLoggedIn(true);
   };
 
   return (
     <>
       {isLoggedIn ? (
-        <div>
-          <p>You are logged in</p>
+        <div className="flex gap-2 flex-row">
           <button
             onClick={() => setIsLoggedIn(false)}
             className="logout-button bg-[#090E11] border border-[#1B232B] rounded-md p-2"
           >
             Logout
           </button>
+          <p>Logged in as {JSON.parse(sessionStorage.getItem("auth") ?? "{Who knows...}").user}</p>
         </div>
       ) : (
         <div className="flex gap-2 flex-row">
