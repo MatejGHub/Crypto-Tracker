@@ -48,6 +48,7 @@ class registerController extends Controller
                 "message" => "Login successful",
                 "token" => $user->createToken('auth_token')->plainTextToken,
                 "user" => $user->name,
+                "user_id" => $user->id,
             ], 200);
         }else{
             return response()->json(["message" => "Invalid password"], 401);
