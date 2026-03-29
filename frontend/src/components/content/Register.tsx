@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 export default function Register() {
   const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("auth") !== null);
@@ -18,6 +18,15 @@ export default function Register() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const syncAuthState = () => {
+      setIsLoggedIn(sessionStorage.getItem("auth") !== null);
+    };
+
+    window.addEventListener("app-auth-change", syncAuthState);
+    return () => window.removeEventListener("app-auth-change", syncAuthState);
+  }, []);
 
   const handleRegister = async () => {
     const url = "http://localhost:8000/api/register";
@@ -58,6 +67,7 @@ export default function Register() {
     });
     const data = await response.json();
     if (!response.ok) {
+      alert("Login failed");
       setIsLoggedIn(false);
       return;
     }
@@ -73,6 +83,7 @@ export default function Register() {
       }),
     );
     setIsLoggedIn(true);
+    window.dispatchEvent(new Event("app-auth-change"));
   };
 
   const handleModalSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -94,6 +105,7 @@ export default function Register() {
             onClick={() => {
               sessionStorage.removeItem("auth");
               setIsLoggedIn(false);
+              window.dispatchEvent(new Event("app-auth-change"));
             }}
             className="logout-button rounded-md border border-[#1B232B] bg-[#11161B] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#1A2129]"
           >

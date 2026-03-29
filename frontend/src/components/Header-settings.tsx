@@ -15,6 +15,7 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.add("theme-switching");
   root.setAttribute("data-theme", theme);
+  window.dispatchEvent(new CustomEvent("app-theme-change", { detail: { theme } }));
   window.setTimeout(() => {
     root.classList.remove("theme-switching");
   }, 0);
@@ -27,6 +28,17 @@ export function HeaderSettings() {
     const initialTheme = getStoredTheme();
     setTheme(initialTheme);
     applyTheme(initialTheme);
+
+    const onThemeChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ theme?: string }>;
+      const nextTheme = customEvent?.detail?.theme;
+      if (nextTheme === "dark" || nextTheme === "light") {
+        setTheme(nextTheme);
+      }
+    };
+
+    window.addEventListener("app-theme-change", onThemeChange);
+    return () => window.removeEventListener("app-theme-change", onThemeChange);
   }, []);
 
   const toggleTheme = () => {
