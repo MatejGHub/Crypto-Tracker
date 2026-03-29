@@ -4,13 +4,16 @@ export default function Register() {
   const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("auth") !== null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"register" | "login">("register");
+  const [authMessage, setAuthMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const openRegisterModal = () => {
     setIsModalOpen(true);
     setModalType("register");
+    setAuthMessage(null);
   };
   const openLoginModal = () => {
     setIsModalOpen(true);
     setModalType("login");
+    setAuthMessage(null);
   };
   const closeModal = () => setIsModalOpen(false);
   const [userData, setUserData] = useState({
@@ -28,68 +31,79 @@ export default function Register() {
     return () => window.removeEventListener("app-auth-change", syncAuthState);
   }, []);
 
-  const handleRegister = async () => {
+  const handleRegister = async (): Promise<boolean> => {
     const url = "http://localhost:8000/api/register";
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        name: userData.usersName,
-        email: userData.email,
-        password: userData.password,
-      }),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      alert("Registration sucessful");
-      console.log(data);
-    } else {
-      console.log(data);
-      alert("Registration failed, please try again");
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: userData.usersName,
+          email: userData.email,
+          password: userData.password,
+        }),
+      });
+      if (response.ok) {
+        setAuthMessage({ type: "success", text: "Registration successful. You can now log in." });
+        return true;
+      }
+      setAuthMessage({ type: "error", text: "Registration failed. Please check your inputs." });
+      return false;
+    } catch {
+      setAuthMessage({ type: "error", text: "Network error. Please try again." });
+      return false;
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<boolean> => {
     const url = "http://localhost:8000/api/login";
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        email: userData.email,
-        password: userData.password,
-      }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      alert("Login failed");
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.password,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setAuthMessage({ type: "error", text: "Login failed. Invalid email or password." });
+        setIsLoggedIn(false);
+        return false;
+      }
+
+      sessionStorage.setItem(
+        "auth",
+        JSON.stringify({
+          token: data.token,
+          user: data.user,
+          user_id: data.user_id,
+        }),
+      );
+      setIsLoggedIn(true);
+      window.dispatchEvent(new Event("app-auth-change"));
+      setAuthMessage(null);
+      return true;
+    } catch {
+      setAuthMessage({ type: "error", text: "Network error. Please try again." });
       setIsLoggedIn(false);
-      return;
+      return false;
     }
-
-    console.log(data);
-
-    sessionStorage.setItem(
-      "auth",
-      JSON.stringify({
-        token: data.token,
-        user: data.user,
-        user_id: data.user_id,
-      }),
-    );
-    setIsLoggedIn(true);
-    window.dispatchEvent(new Event("app-auth-change"));
   };
 
-  const handleModalSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleModalSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    modalType === "register" ? handleRegister() : handleLogin();
-    closeModal();
+    const ok = modalType === "register" ? await handleRegister() : await handleLogin();
+    if (ok && modalType === "login") {
+      closeModal();
+    }
   };
 
   const userName = JSON.parse(sessionStorage.getItem("auth") ?? "{}")?.user ?? "User";
@@ -97,8 +111,8 @@ export default function Register() {
   return (
     <>
       {isLoggedIn ? (
-        <div className="flex items-center gap-2 rounded-md border border-[#1B232B] bg-[#090E11] p-2">
-          <p className="text-sm text-[#8C98A5]">
+        <div className="flex w-full items-center justify-between gap-2 overflow-hidden rounded-md border border-[#1B232B] bg-[#090E11] p-2">
+          <p className="min-w-0 truncate text-sm text-[#8C98A5]">
             Logged in as <span className="font-semibold text-white">{userName}</span>
           </p>
           <button
@@ -107,7 +121,7 @@ export default function Register() {
               setIsLoggedIn(false);
               window.dispatchEvent(new Event("app-auth-change"));
             }}
-            className="logout-button rounded-md border border-[#1B232B] bg-[#11161B] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#1A2129]"
+            className="logout-button shrink-0 rounded-md border border-[#1B232B] bg-[#11161B] px-2.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#1A2129]"
           >
             Logout
           </button>
@@ -127,6 +141,11 @@ export default function Register() {
           <div className="w-[320px] rounded-lg border border-[#1B232B] bg-[#090E11] p-4 text-white">
             <h2 className="mb-2 text-lg font-semibold">{modalType === "register" ? "Register" : "Login"}</h2>
             <form onSubmit={handleModalSubmit}>
+              {authMessage ? (
+                <p className={`mb-2 text-sm ${authMessage.type === "error" ? "text-[#FF3B5C]" : "text-[#00B65C]"}`}>
+                  {authMessage.text}
+                </p>
+              ) : null}
               {modalType === "register" && (
                 <input
                   type="text"

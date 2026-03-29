@@ -54,20 +54,20 @@ export function AiInsights() {
   }, [historyPage]);
   return (
     <>
-      <section className="ai-insights-container w-full text-white h-screen flex flex-col">
-        <div className="ai-insights-header h-16 flex justify-between w-full p-3 bg-[#090E11] border-b border-[#1B232B]">
+      <section className="ai-insights-container flex h-full w-full min-h-0 flex-col overflow-y-auto text-white">
+        <div className="ai-insights-header flex min-h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3 py-3 sm:py-4">
           <div className="flex flex-col">
             <h1 className="text-lg font-bold">AI Insights</h1>
             <p className="text-sm text-gray-100">Track your favorite cryptocurrencies</p>
           </div>
           <HeaderSettings />
         </div>
-        <div className="ai-insights-content bg-black p-3 flex-1 border-b border-[#1B232B] overflow-y-auto">
+        <div className="ai-insights-content border-b border-[#1B232B] bg-black p-3">
           <div className="flex flex-col gap-6">
             {!insight ? (
               <p className="text-sm text-gray-100">Loading...</p>
             ) : (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <article className="rounded-2xl border border-[#1B232B] bg-[#050D14] px-5 py-6">
                   <div className="flex items-center gap-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#071B14]">

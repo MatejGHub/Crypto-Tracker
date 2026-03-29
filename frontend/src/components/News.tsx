@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 export function News() {
   const [news, setNews] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const timeAgo = (date: string) => {
     const m = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
     if (m < 1) return "now";
@@ -16,17 +18,24 @@ export function News() {
     const url = "https://cryptocurrency.cv/api/news";
     try {
       const response = await fetch(url);
+      if (!response.ok) {
+        return { items: [], error: `News API error (${response.status})` };
+      }
       const data = await response.json();
-      return data.articles;
-    } catch (error) {
-      console.error(error);
+      const articles = Array.isArray(data?.articles) ? data.articles : Array.isArray(data) ? data : [];
+      return { items: articles, error: "" };
+    } catch {
+      return { items: [], error: "News source unavailable right now." };
     }
   }
 
   useEffect(() => {
     const loadNews = async () => {
-      const articles = await getNews();
-      setNews(articles ?? []);
+      setIsLoading(true);
+      const result = await getNews();
+      setNews(result.items ?? []);
+      setErrorMessage(result.error ?? "");
+      setIsLoading(false);
     };
 
     loadNews();
@@ -47,6 +56,11 @@ export function News() {
         </div>
       </div>
       <div className="news-container mt-3 flex flex-col gap-3">
+        {isLoading ? <p className="text-sm text-[#8C98A5]">Loading news...</p> : null}
+        {!isLoading && errorMessage ? <p className="text-sm text-[#FF3B5C]">{errorMessage}</p> : null}
+        {!isLoading && !errorMessage && news.length === 0 ? (
+          <p className="text-sm text-[#8C98A5]">No news available at the moment.</p>
+        ) : null}
         {news.slice(0, 3).map((newsItem) => {
           return (
             <article

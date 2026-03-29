@@ -1,13 +1,14 @@
 import { Sparkles, Star } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
 import WishlistContext from "../context/WIshlistContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import MarketDataContext from "../context/MarketData";
 import { useNavigate } from "react-router-dom";
 
 export function MarketData() {
   const { isWishlisted, setIsWishlisted } = useContext(WishlistContext) ?? { isWishlisted: new Set(), setIsWishlisted: () => {} };
   const { marketData } = useContext(MarketDataContext) ?? { marketData: [] };
+  const [watchlistError, setWatchlistError] = useState("");
   const navigate = useNavigate();
 
   function toggleWishlist(id: string) {
@@ -32,54 +33,60 @@ export function MarketData() {
   async function storeWatchlistItems(coinId: string) {
     const token = getAuthToken();
     if (!token) {
-      console.log("You are not logged in");
+      setWatchlistError("Please log in to edit your watchlist.");
       return false;
     }
-
-    const url = "http://localhost:8000/api/watchlist";
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        coin_id: coinId,
-      }),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      console.log(data);
-      return true;
+    try {
+      const url = "http://localhost:8000/api/watchlist";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          coin_id: coinId,
+        }),
+      });
+      if (response.ok) {
+        setWatchlistError("");
+        return true;
+      }
+      setWatchlistError("Failed to add coin to watchlist.");
+      return false;
+    } catch {
+      setWatchlistError("Network error while updating watchlist.");
+      return false;
     }
-    console.log(data);
-    return false;
   }
 
   async function removeWatchlistItem(coinId: string) {
     const token = getAuthToken();
     if (!token) {
-      console.log("You are not logged in");
+      setWatchlistError("Please log in to edit your watchlist.");
       return false;
     }
-
-    const url = `http://localhost:8000/api/watchlist/${coinId}`;
-    const response = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    if (response.ok) {
-      console.log(data);
-      return true;
+    try {
+      const url = `http://localhost:8000/api/watchlist/${coinId}`;
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        setWatchlistError("");
+        return true;
+      }
+      setWatchlistError("Failed to remove coin from watchlist.");
+      return false;
+    } catch {
+      setWatchlistError("Network error while updating watchlist.");
+      return false;
     }
-    console.log(data);
-    return false;
   }
 
   async function handleWatchlistClick(coinId: string) {
@@ -105,12 +112,11 @@ export function MarketData() {
       });
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
         const items = Array.isArray(data?.items) ? data.items : [];
         setIsWishlisted(new Set(items));
         localStorage.setItem("wishlisted", JSON.stringify(items));
       } else {
-        console.log(data);
+        setWatchlistError("Failed to load watchlist.");
       }
     };
     getWatchlistItems();
@@ -128,8 +134,9 @@ export function MarketData() {
           <p className="text-sm text-gray-100">Track your favorite cryptocurrencies</p>
         </div>
       </div>
-      <div className="table-container">
-        <table className="w-full mt-3">
+      {watchlistError ? <p className="mt-2 text-sm text-[#FF3B5C]">{watchlistError}</p> : null}
+      <div className="table-container mt-3 overflow-x-auto">
+        <table className="w-full min-w-[900px]">
           <thead>
             <tr>
               <td className="py-2">#</td>
@@ -144,9 +151,16 @@ export function MarketData() {
             </tr>
           </thead>
           <tbody>
+            {marketData.length === 0 ? (
+              <tr>
+                <td className="border-t border-[#1B232B] py-6 text-center text-sm text-[#8C98A5]" colSpan={9}>
+                  Market data is temporarily unavailable.
+                </td>
+              </tr>
+            ) : null}
             {marketData.map((singleMarketData) => {
               return (
-                <tr onClick={() => navigateToCrypto(singleMarketData.id)}>
+                <tr key={singleMarketData.id} onClick={() => navigateToCrypto(singleMarketData.id)}>
                   <td className="border-t border-[#1B232B] py-2 text-[#8C98A5]">{singleMarketData.market_cap_rank}</td>
                   <td className="border-t border-[#1B232B] py-2 flex flex-row gap-2 items-center">
                     <img src={singleMarketData.image} alt={singleMarketData.name} className="w-6 h-6" />
@@ -237,7 +251,6 @@ export function MarketData() {
                       }}
                     >
                       <Star
-                        onClick={() => alert("You are not logged in")}
                         className={`h-4 w-4 ${isWishlisted.has(singleMarketData.id) ? "fill-yellow-500 text-yellow-500" : ""}`}
                       />
                     </button>

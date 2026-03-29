@@ -28,21 +28,21 @@ export function Watchlist() {
 
   return (
     <>
-      <section className="watchlist-container w-full text-white flex flex-col">
-        <div className="watchlist-header h-16 flex justify-between w-full p-3 bg-[#090E11] border-b border-[#1B232B]">
+      <section className="watchlist-container flex h-full w-full min-h-0 flex-col overflow-y-auto text-white">
+        <div className="watchlist-header flex min-h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3 py-3 sm:py-4">
           <div className="flex flex-col">
             <h1 className="text-lg font-bold">Watchlist</h1>
             <p className="text-sm text-gray-100">Track your favorite cryptocurrencies</p>
           </div>
           <HeaderSettings />
         </div>
-        <div className="watchlist-content bg-black p-3 flex-1 min-h-0 overflow-y-auto border-b border-[#1B232B]">
+        <div className="watchlist-content min-h-0 border-b border-[#1B232B] bg-black p-3">
           {watchlistCoins.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <EmptyWatchlistCard />
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-3">
               {watchlistCoins.map((coin) => {
                 const sparklineData = (coin.sparkline_in_7d?.price ?? []).map((price: number, index: number) => {
                   return {
@@ -64,7 +64,7 @@ export function Watchlist() {
                       <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
                     </div>
 
-                    <div className="mt-4 flex items-end gap-4">
+                    <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end">
                       <div className="flex-1 min-w-0">
                         <p className="text-xl font-bold text-white">${coin.current_price.toLocaleString("en-US")}</p>
                         <p
@@ -74,7 +74,7 @@ export function Watchlist() {
                           {coin.price_change_percentage_24h.toFixed(2)}%
                         </p>
                       </div>
-                      <div className="h-12 w-40 min-w-[10rem] shrink-0">
+                      <div className="h-12 w-full min-w-0 sm:w-40 sm:min-w-[10rem] sm:shrink-0">
                         <LineChart width={160} height={48} data={sparklineData}>
                           <Line
                             type="linear"

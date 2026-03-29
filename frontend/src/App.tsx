@@ -44,7 +44,7 @@ function Layout() {
   return (
     <WishlistProvider>
       <MarketDataProvider>
-        <main className="main-container flex h-screen overflow-hidden">
+        <main className="main-container flex h-screen flex-col overflow-hidden md:flex-row">
           <Aside activeTab={activeTab} setActiveTab={(tab) => navigate(tabToPath(tab))} />
           <Outlet />
         </main>

@@ -94,7 +94,7 @@ export function Chart() {
 
   return (
     <>
-      <div className="chart-header flex justify-between mb-2">
+      <div className="chart-header mb-2 flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
         <div>
           <h2 className="text-lg font-bold">Bitcoin (BTC)</h2>
           <div className="flex flex-row gap-2 align-center">
@@ -109,7 +109,7 @@ export function Chart() {
             </div>
           </div>
         </div>
-        <div className="chart-controls flex justify-end gap-2 mb-3">
+        <div className="chart-controls mb-3 flex flex-wrap justify-end gap-2">
           {buttons.map((button) => {
             return (
               <button
@@ -130,43 +130,45 @@ export function Chart() {
         </div>
       </div>
       <div className="chart-container w-full min-w-0 rounded-2xl border border-[#1B232B] bg-[#050D14] p-4">
-        <div className="chart-container-item h-[260px] w-full min-w-0">
-          <div className="chart-container-item-bar h-[240px] w-full min-w-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid stroke="#1B232B" vertical={false} />
-                <XAxis
-                  type="number"
-                  dataKey="time"
-                  hide={true}
-                  axisLine={false}
-                  tickLine={false}
-                  domain={["dataMin", "dataMax"]}
-                />
-                <YAxis
-                  tick={{ fill: "#8C98A5", fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  domain={([dataMin, dataMax]) => {
-                    return [dataMin, dataMax];
-                  }}
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                />
-                <Tooltip
-                  contentStyle={{ background: "#0B1620", border: "1px solid #1B232B", borderRadius: "10px" }}
-                  labelStyle={{ color: "#8C98A5" }}
-                  labelFormatter={(value) => {
-                    const numericValue = typeof value === "number" ? value : Number(value ?? 0);
-                    return new Date(numericValue).toLocaleString();
-                  }}
-                  formatter={(value) => {
-                    const numericValue = typeof value === "number" ? value : Number(value ?? 0);
-                    return [`$${numericValue.toLocaleString()}`, "Price"];
-                  }}
-                />
-                <Line type="monotone" dataKey="price" stroke="#00B65C" strokeWidth={2.5} dot={false} activeDot={false} />
-              </LineChart>
-            </ResponsiveContainer>
+        <div className="chart-scroll overflow-x-auto pb-1">
+          <div className="chart-container-item h-[260px] min-w-[560px] sm:min-w-0">
+            <div className="chart-container-item-bar h-[240px] w-full min-w-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid stroke="#1B232B" vertical={false} />
+                  <XAxis
+                    type="number"
+                    dataKey="time"
+                    hide={true}
+                    axisLine={false}
+                    tickLine={false}
+                    domain={["dataMin", "dataMax"]}
+                  />
+                  <YAxis
+                    tick={{ fill: "#8C98A5", fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    domain={([dataMin, dataMax]) => {
+                      return [dataMin, dataMax];
+                    }}
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  />
+                  <Tooltip
+                    contentStyle={{ background: "#0B1620", border: "1px solid #1B232B", borderRadius: "10px" }}
+                    labelStyle={{ color: "#8C98A5" }}
+                    labelFormatter={(value) => {
+                      const numericValue = typeof value === "number" ? value : Number(value ?? 0);
+                      return new Date(numericValue).toLocaleString();
+                    }}
+                    formatter={(value) => {
+                      const numericValue = typeof value === "number" ? value : Number(value ?? 0);
+                      return [`$${numericValue.toLocaleString()}`, "Price"];
+                    }}
+                  />
+                  <Line type="monotone" dataKey="price" stroke="#00B65C" strokeWidth={2.5} dot={false} activeDot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
