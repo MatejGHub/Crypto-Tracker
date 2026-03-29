@@ -1,0 +1,58 @@
+[data-theme] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+[data-theme="light"] body,
+[data-theme="light"] #root {
+  background: #f3f6fb !important;
+  color: #111827 !important;
+}
+
+[data-theme="light"] .bg-black {
+  background-color: #f3f6fb !important;
+}
+
+[data-theme="light"] [class*="bg-["] {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] [class*="bg-black/"] {
+  background-color: rgba(17, 24, 39, 0.35) !important;
+}
+
+[data-theme="light"] [class*="text-white"],
+[data-theme="light"] [class*="text-gray-100"] {
+  color: #111827 !important;
+}
+
+[data-theme="light"] [class*="placeholder:text-[#7B8794]"] {
+  color: #6b7280 !important;
+}
+
+[data-theme="light"] [class*="text-[#8C98A5]"] {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] [class*="border-[#1B232B]"] {
+  border-color: #d1d5db !important;
+}
+
+[data-theme="light"] .register-button,
+[data-theme="light"] .login-button,
+[data-theme="light"] .logout-button,
+[data-theme="light"] .header-settings-header {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+}

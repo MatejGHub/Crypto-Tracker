@@ -237,6 +237,7 @@ export function MarketData() {
                       }}
                     >
                       <Star
+                        onClick={() => alert("You are not logged in")}
                         className={`h-4 w-4 ${isWishlisted.has(singleMarketData.id) ? "fill-yellow-500 text-yellow-500" : ""}`}
                       />
                     </button>

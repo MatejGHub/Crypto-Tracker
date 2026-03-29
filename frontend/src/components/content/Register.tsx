@@ -35,10 +35,11 @@ export default function Register() {
     });
     const data = await response.json();
     if (response.ok) {
-      setIsLoggedIn(true);
+      alert("Registration sucessful");
       console.log(data);
     } else {
       console.log(data);
+      alert("Registration failed, please try again");
     }
   };
 
@@ -80,20 +81,24 @@ export default function Register() {
     closeModal();
   };
 
+  const userName = JSON.parse(sessionStorage.getItem("auth") ?? "{}")?.user ?? "User";
+
   return (
     <>
       {isLoggedIn ? (
-        <div className="flex gap-2 flex-row">
+        <div className="flex items-center gap-2 rounded-md border border-[#1B232B] bg-[#090E11] p-2">
+          <p className="text-sm text-[#8C98A5]">
+            Logged in as <span className="font-semibold text-white">{userName}</span>
+          </p>
           <button
             onClick={() => {
               sessionStorage.removeItem("auth");
               setIsLoggedIn(false);
             }}
-            className="logout-button bg-[#090E11] border border-[#1B232B] rounded-md p-2"
+            className="logout-button rounded-md border border-[#1B232B] bg-[#11161B] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#1A2129]"
           >
             Logout
           </button>
-          <p>Logged in as {JSON.parse(sessionStorage.getItem("auth") ?? "{Who knows...}").user}</p>
         </div>
       ) : (
         <div className="flex gap-2 flex-row">
