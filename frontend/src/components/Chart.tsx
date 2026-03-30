@@ -1,5 +1,5 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 type ChartData = {
@@ -12,6 +12,9 @@ export function Chart() {
   const [livePrice, setLivePrice] = useState(0);
   const [livePrice24hChange, setLivePrice24hChange] = useState(0);
   const [days, setDays] = useState(1);
+  const [chartError, setChartError] = useState("");
+  const [isChartLoading, setIsChartLoading] = useState(false);
+  const latestChartRequest = useRef(0);
 
   const buttons = [
     { label: "1D", value: 1 },
@@ -20,31 +23,54 @@ export function Chart() {
     { label: "1Y", value: 365 },
   ];
 
-  async function getDailyData() {
-    const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}`;
+  async function getDailyData(selectedDays: number) {
+    const requestId = Date.now();
+    latestChartRequest.current = requestId;
+    setIsChartLoading(true);
+    const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${selectedDays}`;
     try {
       const response = await fetch(url);
+      if (!response.ok) {
+        if (latestChartRequest.current === requestId) {
+          setChartError("Failed to load chart data.");
+          setChartData([]);
+        }
+        return;
+      }
       const data = await response.json();
+      const prices = Array.isArray(data?.prices) ? data.prices : [];
+
+      if (latestChartRequest.current !== requestId) {
+        return;
+      }
 
       setChartData(
-        data.prices.map(([timestamp, price]: [number, number]) => {
+        prices.map(([timestamp, price]: [number, number]) => {
           return {
             time: timestamp,
             price,
           };
         }),
       );
-    } catch (error) {
-      console.error(error);
+      setChartError("");
+    } catch {
+      if (latestChartRequest.current === requestId) {
+        setChartError("Network error while loading chart.");
+        setChartData([]);
+      }
+    } finally {
+      if (latestChartRequest.current === requestId) {
+        setIsChartLoading(false);
+      }
     }
   }
 
   useEffect(() => {
-    getDailyData();
+    getDailyData(days);
 
     const intervalId = setInterval(
       () => {
-        getDailyData();
+        getDailyData(days);
       },
       60 * 60 * 1000,
     );
@@ -129,6 +155,8 @@ export function Chart() {
           })}
         </div>
       </div>
+      {chartError ? <p className="mb-2 text-sm text-[#FF3B5C]">{chartError}</p> : null}
+      {isChartLoading && chartData.length === 0 ? <p className="mb-2 text-sm text-[#8C98A5]">Loading chart...</p> : null}
       <div className="chart-container w-full min-w-0 rounded-2xl border border-[#1B232B] bg-[#050D14] p-4">
         <div className="chart-scroll overflow-x-auto pb-1">
           <div className="chart-container-item h-[260px] min-w-[560px] sm:min-w-0">

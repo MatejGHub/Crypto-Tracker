@@ -34,15 +34,15 @@ export function Settings() {
 
   return (
     <>
-      <section className="settings-container flex h-full w-full min-h-0 flex-col overflow-y-auto text-white">
-        <div className="settings-header flex min-h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3 py-3 sm:py-4">
+      <section className="settings-container flex h-full w-full min-h-0 flex-col overflow-y-auto bg-black text-white">
+        <div className="settings-header flex h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3">
           <div className="flex flex-col">
             <h1 className="text-lg font-bold">Settings</h1>
             <p className="text-sm text-gray-100">Track your favorite cryptocurrencies</p>
           </div>
           <HeaderSettings />
         </div>
-        <div className="settings-content border-b border-[#1B232B] bg-black p-3">
+        <div className="settings-content min-h-0 flex-1 border-b border-[#1B232B] bg-black p-3">
           <div className="grid gap-3 md:grid-cols-2">
             <article className="rounded-2xl border border-[#1B232B] bg-[#050D14] p-4">
               <h2 className="text-base font-semibold text-white">Account</h2>

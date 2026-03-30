@@ -11,6 +11,21 @@ export function MarketData() {
   const [watchlistError, setWatchlistError] = useState("");
   const navigate = useNavigate();
 
+  function formatCompactUsd(value: unknown) {
+    if (typeof value !== "number") return "—";
+    return Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      notation: "compact",
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
+
+  function formatUsd(value: unknown) {
+    if (typeof value !== "number") return "—";
+    return `$${value.toLocaleString("en-US")}`;
+  }
+
   function toggleWishlist(id: string) {
     setIsWishlisted((prev) => {
       const next = new Set(prev);
@@ -159,6 +174,11 @@ export function MarketData() {
               </tr>
             ) : null}
             {marketData.map((singleMarketData) => {
+              const priceChange24h =
+                typeof singleMarketData.price_change_percentage_24h === "number"
+                  ? singleMarketData.price_change_percentage_24h
+                  : null;
+              const isPositiveChange = priceChange24h !== null && priceChange24h > 0;
               return (
                 <tr key={singleMarketData.id} onClick={() => navigateToCrypto(singleMarketData.id)}>
                   <td className="border-t border-[#1B232B] py-2 text-[#8C98A5]">{singleMarketData.market_cap_rank}</td>
@@ -169,36 +189,13 @@ export function MarketData() {
                       <p className="text-sm text-[#8C98A5]">{singleMarketData.symbol.toUpperCase()}</p>
                     </span>
                   </td>
-                  <td className="border-t border-[#1B232B] py-2">${singleMarketData.current_price.toLocaleString("en-US")}</td>
-                  <td
-                    className={`border-t border-[#1B232B] py-2 ${singleMarketData.price_change_percentage_24h > 0 ? "text-[#00B65C]" : "text-[#FF3B5C]"}`}
-                  >
-                    {singleMarketData.price_change_percentage_24h.toFixed(2)}%
+                  <td className="border-t border-[#1B232B] py-2">{formatUsd(singleMarketData.current_price)}</td>
+                  <td className={`border-t border-[#1B232B] py-2 ${isPositiveChange ? "text-[#00B65C]" : "text-[#FF3B5C]"}`}>
+                    {priceChange24h !== null ? `${priceChange24h.toFixed(2)}%` : "—"}
                   </td>
-                  <td className="border-t border-[#1B232B] py-2">
-                    {Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                      notation: "compact",
-                      maximumFractionDigits: 2,
-                    }).format(singleMarketData.market_cap)}
-                  </td>
-                  <td className="border-t border-[#1B232B] py-2">
-                    {Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                      notation: "compact",
-                      maximumFractionDigits: 2,
-                    }).format(singleMarketData.total_volume)}
-                  </td>
-                  <td className="border-t border-[#1B232B] py-2">
-                    {Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                      notation: "compact",
-                      maximumFractionDigits: 2,
-                    }).format(singleMarketData.circulating_supply)}
-                  </td>
+                  <td className="border-t border-[#1B232B] py-2">{formatCompactUsd(singleMarketData.market_cap)}</td>
+                  <td className="border-t border-[#1B232B] py-2">{formatCompactUsd(singleMarketData.total_volume)}</td>
+                  <td className="border-t border-[#1B232B] py-2">{formatCompactUsd(singleMarketData.circulating_supply)}</td>
                   <td className="border-t border-[#1B232B] py-2">
                     <div className="h-12 w-28">
                       <LineChart
@@ -215,7 +212,7 @@ export function MarketData() {
                         <Line
                           type="linear"
                           dataKey="price"
-                          stroke={singleMarketData.price_change_percentage_24h > 0 ? "#00B65C" : "#FF3B5C"}
+                          stroke={isPositiveChange ? "#00B65C" : "#FF3B5C"}
                           strokeWidth={2}
                           dot={false}
                           activeDot={false}

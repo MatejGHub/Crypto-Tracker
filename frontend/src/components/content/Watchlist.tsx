@@ -28,15 +28,15 @@ export function Watchlist() {
 
   return (
     <>
-      <section className="watchlist-container flex h-full w-full min-h-0 flex-col overflow-y-auto text-white">
-        <div className="watchlist-header flex min-h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3 py-3 sm:py-4">
+      <section className="watchlist-container flex h-full w-full min-h-0 flex-col overflow-y-auto bg-black text-white">
+        <div className="watchlist-header flex h-16 w-full items-center justify-between border-b border-[#1B232B] bg-[#090E11] px-3">
           <div className="flex flex-col">
             <h1 className="text-lg font-bold">Watchlist</h1>
             <p className="text-sm text-gray-100">Track your favorite cryptocurrencies</p>
           </div>
           <HeaderSettings />
         </div>
-        <div className="watchlist-content min-h-0 border-b border-[#1B232B] bg-black p-3">
+        <div className="watchlist-content min-h-0 flex-1 border-b border-[#1B232B] bg-black p-3">
           {watchlistCoins.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <EmptyWatchlistCard />
