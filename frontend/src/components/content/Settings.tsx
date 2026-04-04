@@ -79,8 +79,58 @@ export function Settings() {
                   Clear Wishlist Cache
                 </button>
               </div>
+              <div className="mt-6 border-t border-[#1B232B] pt-3 text-xs text-[#617181]">
+                <a href="#privacy-policy" className="transition-colors hover:text-[#8C98A5]">
+                  Privacy policy
+                </a>
+              </div>
             </article>
           </div>
+          <article
+            id="privacy-policy"
+            className="mt-3 rounded-2xl border border-[#1B232B] bg-[#050D14] p-4 text-sm text-[#8C98A5]"
+          >
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-[#8C98A5] [&::-webkit-details-marker]:hidden">
+                <span>Privacy policy</span>
+                <svg
+                  className="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 8L10 13L15 8"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </summary>
+              <div className="mt-3 space-y-3 leading-relaxed">
+                <p>
+                  This app may process basic usage and technical data to run features and improve reliability, including page
+                  visits, device/browser details, and app interaction events.
+                </p>
+                <p>
+                  If analytics are enabled, Microsoft Clarity may collect session recordings and heatmap data. This helps identify
+                  bugs and improve user experience.
+                </p>
+                <p>
+                  Account data entered in this app (such as email and watchlist items) is stored to support login and saved
+                  features. Sensitive credentials are not intentionally stored in browser logs.
+                </p>
+                <p>
+                  Third-party market and AI providers may receive request metadata needed to return results. Their services are
+                  governed by their own privacy terms.
+                </p>
+                <p>You can clear local app data at any time from Settings using Clear Session and Clear Wishlist Cache.</p>
+                <p>Contact: matej.stremfelj26@gmail.com</p>
+                <p className="text-xs text-[#617181]">Last updated: April 2026</p>
+              </div>
+            </details>
+          </article>
         </div>
       </section>
     </>
