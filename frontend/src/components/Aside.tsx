@@ -17,7 +17,7 @@ export function Aside({ activeTab, setActiveTab }: { activeTab: string; setActiv
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary">
               <LineChart className="h-5 w-5 text-black" />
             </div>
-            <span className="text-lg font-semibold tracking-tight">CryptoTrack</span>
+            <span className="text-lg font-semibold tracking-tight">Crypto Tracker</span>
           </div>
         </div>
         <div className="aside-content flex min-h-0 flex-1 flex-row gap-3 overflow-x-auto bg-[#05090D] p-3 text-white md:flex-col md:overflow-x-visible">

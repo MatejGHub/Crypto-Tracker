@@ -79,11 +79,6 @@ export function Settings() {
                   Clear Wishlist Cache
                 </button>
               </div>
-              <div className="mt-6 border-t border-[#1B232B] pt-3 text-xs text-[#617181]">
-                <a href="#privacy-policy" className="transition-colors hover:text-[#8C98A5]">
-                  Privacy policy
-                </a>
-              </div>
             </article>
           </div>
           <article
