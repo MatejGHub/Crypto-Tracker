@@ -32,7 +32,7 @@ export default function Register() {
   }, []);
 
   const handleRegister = async (): Promise<boolean> => {
-    const url = "http://localhost:8000/api/register";
+    const url = "/api/register";
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -59,7 +59,7 @@ export default function Register() {
   };
 
   const handleLogin = async (): Promise<boolean> => {
-    const url = "http://localhost:8000/api/login";
+    const url = "/api/login";
     try {
       const response = await fetch(url, {
         method: "POST",

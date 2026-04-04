@@ -12,7 +12,7 @@ export function AiInsights() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("http://localhost:8000/api/ai-insights");
+      const res = await fetch("/api/ai-insights");
       const data = await res.json();
       const raw = data?.choices?.[0]?.message?.content;
       const parsed = typeof raw === "string" ? (JSON.parse(raw) as Record<string, unknown>) : null;
@@ -30,7 +30,7 @@ export function AiInsights() {
   useEffect(() => {
     const getAiInsightsHistory = async () => {
       const page = historyPage;
-      const response = await fetch(`http://localhost:8000/api/ai-insights-history?page=${page}`, {
+      const response = await fetch(`/api/ai-insights-history?page=${page}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

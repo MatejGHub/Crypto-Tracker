@@ -52,7 +52,7 @@ export function MarketData() {
       return false;
     }
     try {
-      const url = "http://localhost:8000/api/watchlist";
+      const url = "/api/watchlist";
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -83,7 +83,7 @@ export function MarketData() {
       return false;
     }
     try {
-      const url = `http://localhost:8000/api/watchlist/${coinId}`;
+      const url = `/api/watchlist/${coinId}`;
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
@@ -116,7 +116,7 @@ export function MarketData() {
     const getWatchlistItems = async () => {
       const token = getAuthToken();
       if (!token) return;
-      const url = "http://localhost:8000/api/watchlist";
+      const url = "/api/watchlist";
       const response = await fetch(url, {
         method: "GET",
         headers: {
