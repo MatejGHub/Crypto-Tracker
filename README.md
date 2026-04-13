@@ -20,6 +20,10 @@ A full-stack crypto dashboard with market tracking, watchlist persistence, auth,
 - Theme toggle (dark/light) with per-user/guest preference persistence
 - Settings page actions (session clear/logout, cache reset, theme reset)
 
+## Known Issue (Production Access)
+
+- Crypto domains are often treated as high-risk by automated provider/browser filters (similar to categories that commonly get strict blocking policies), which can cause false-positive warning pages on some networks.
+
 ## Project Structure
 
 - `frontend/` -> React app (Vite)
